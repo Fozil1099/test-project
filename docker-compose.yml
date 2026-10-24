@@ -29,6 +29,12 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000/api/health || exit 1"]
+      interval: 10s
+      timeout: 3s
+      start_period: 20s
+      retries: 5
 
   # frontend: добавляется в feat/frontend
 
