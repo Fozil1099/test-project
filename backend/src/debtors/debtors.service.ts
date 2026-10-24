@@ -6,7 +6,9 @@ import { PrismaService } from '../prisma/prisma.service';
 import { DebtorsQueryDto } from './dto/debtors-query.dto';
 import { DebtorEntity, DebtorListEntity } from './entities/debtor.entity';
 
-interface DebtorRow extends DebtorEntity {
+interface DebtorRow extends Omit<DebtorEntity, 'paid' | 'debt'> {
+  paid: bigint;
+  debt: bigint;
   total: bigint;
   totalDebt: bigint;
 }
@@ -68,7 +70,7 @@ export class DebtorsService {
   private debtorsCte(start: string, end: string): Prisma.Sql {
     return Prisma.sql`
       WITH paid AS (
-        SELECT student_id, SUM(amount)::int AS paid
+        SELECT student_id, SUM(amount) AS paid
         FROM payments
         WHERE paid_at >= ${start}::date AND paid_at < ${end}::date
         GROUP BY student_id
@@ -88,5 +90,6 @@ export class DebtorsService {
 
 function toDebtor(row: DebtorRow): DebtorEntity {
   const { id, name, phone, group, monthlyFee, paid, debt } = row;
-  return { id, name, phone, group, monthlyFee, paid, debt };
+  // SUM over int is bigint in Postgres; one student's monthly total can exceed int4.
+  return { id, name, phone, group, monthlyFee, paid: Number(paid), debt: Number(debt) };
 }

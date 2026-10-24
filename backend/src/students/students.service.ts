@@ -17,9 +17,10 @@ export class StudentsService {
     const where: Prisma.StudentWhereInput = {};
     if (query.group) where.group = query.group;
     if (query.search) {
+      const search = escapeLike(query.search);
       where.OR = [
-        { name: { contains: query.search, mode: 'insensitive' } },
-        { phone: { contains: query.search } },
+        { name: { contains: search, mode: 'insensitive' } },
+        { phone: { contains: search } },
       ];
     }
     // Two independent statements run in parallel on the pool. A transaction would not
@@ -54,6 +55,11 @@ export class StudentsService {
       .delete({ where: { id }, select: { id: true } })
       .catch((e: unknown) => rethrowNotFound(e, id));
   }
+}
+
+/** Prisma passes `contains` to LIKE as is, so % and _ would act as wildcards. */
+function escapeLike(value: string): string {
+  return value.replace(/[\\%_]/g, '\\$&');
 }
 
 /** A single UPDATE/DELETE raises P2025 for a missing row, so no prior SELECT is needed. */

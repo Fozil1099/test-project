@@ -119,6 +119,26 @@ describe('Debtors (e2e)', () => {
     expect(past.body).toEqual({ month: '2026-10', items: [], total: 3, totalDebt: 1400000 });
   });
 
+  it('does not overflow when a month of payments exceeds int4', async () => {
+    const s = await student('Крупный', 100_000_000);
+    await ctx.prisma.payment.createMany({
+      data: Array.from({ length: 22 }, () => ({
+        studentId: s.id,
+        amount: 100_000_000,
+        paidAt: new Date('2026-10-05T00:00:00Z'),
+      })),
+    });
+    const debtor = await student('Должник', 100_000_000);
+    await pay(debtor.id, 1, '2026-10-05');
+
+    const res = await debtors('2026-10');
+    expect(res.body).toMatchObject({
+      total: 1,
+      totalDebt: 99_999_999,
+      items: [{ name: 'Должник', paid: 1, debt: 99_999_999 }],
+    });
+  });
+
   it('uses a single SQL statement per request', async () => {
     const s = await student('Азиз', 500000);
     await pay(s.id, 100000, '2026-10-05');

@@ -111,6 +111,11 @@ describe('Students (e2e)', () => {
       expect(byPhone.body).toMatchObject({ total: 1, items: [{ name: 'Азиз' }] });
     });
 
+    it.each(['%', '_', '\\'])('treats %p in search literally', async (search) => {
+      const res = await request(http).get('/api/students').query({ search }).expect(200);
+      expect(res.body.total).toBe(0);
+    });
+
     it('filters by group', async () => {
       const res = await request(http).get('/api/students?group=A').expect(200);
       expect(res.body.total).toBe(2);

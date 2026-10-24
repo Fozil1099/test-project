@@ -7,8 +7,13 @@ export class PrismaService
   implements OnModuleInit, OnModuleDestroy
 {
   constructor() {
-    // Query events are emitted so tests can count SQL statements per HTTP request.
-    super({ log: [{ emit: 'event', level: 'query' }, 'warn', 'error'] });
+    // Query events are emitted only in tests, which count SQL statements per HTTP request.
+    super({
+      log:
+        process.env.NODE_ENV === 'test'
+          ? [{ emit: 'event', level: 'query' }, 'warn', 'error']
+          : ['warn', 'error'],
+    });
   }
 
   async onModuleInit(): Promise<void> {
