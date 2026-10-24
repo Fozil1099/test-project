@@ -16,7 +16,20 @@ services:
       timeout: 3s
       retries: 10
 
-  # backend: добавляется в feat/backend-api
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-payments}?schema=public
+      PORT: 3000
+      APP_TIMEZONE: ${APP_TIMEZONE:-Asia/Tashkent}
+      CORS_ORIGIN: ${CORS_ORIGIN:-*}
+    ports:
+      - "${BACKEND_PORT:-3000}:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+
   # frontend: добавляется в feat/frontend
 
 volumes:
