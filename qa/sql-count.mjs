@@ -23,7 +23,8 @@ async function measure(label, path, init) {
   return { label, status: res.status, count: lines.length, lines };
 }
 
-const month = new Date().toISOString().slice(0, 7);
+// Month in the backend time zone (APP_TIMEZONE), not UTC: they differ in the first hours of a month.
+const month = new Date().toLocaleDateString('sv-SE', { timeZone: process.env.APP_TIMEZONE ?? 'Asia/Tashkent' }).slice(0, 7);
 const { items } = await (await fetch(BASE + '/students?limit=1')).json();
 const id = items[0].id;
 const json = (method, body) => ({ method, headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });

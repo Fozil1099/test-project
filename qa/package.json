@@ -4,8 +4,7 @@
   "type": "module",
   "scripts": {
     "bench": "node bench.mjs",
-    "sql-count": "node sql-count.mjs",
-    "test:e2e": "playwright test"
+    "sql-count": "node sql-count.mjs"
   },
   "devDependencies": {
     "autocannon": "8.0.0"

@@ -66,6 +66,7 @@ test.describe('Ученики', () => {
     await expect(page.getByTestId('students-list')).toBeVisible();
     const api = trackApi(page);
     await page.getByTestId('student-search').pressSequentially('Алиев', { delay: 50 });
+    // 300 ms debounce + margin: we check that no extra requests arrive after typing stops.
     await page.waitForTimeout(600);
     expect(api.paths().filter((p) => p.includes('search='))).toHaveLength(1);
   });

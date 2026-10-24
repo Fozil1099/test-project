@@ -16,7 +16,8 @@ async function json(path, init) {
   return res.status === 204 ? null : res.json();
 }
 
-const month = new Date().toISOString().slice(0, 7);
+// Month in the backend time zone (APP_TIMEZONE), not UTC: they differ in the first hours of a month.
+const month = new Date().toLocaleDateString('sv-SE', { timeZone: process.env.APP_TIMEZONE ?? 'Asia/Tashkent' }).slice(0, 7);
 const { items } = await json('/students?limit=100');
 if (!items.length) throw new Error('No students: run npm run seed:large first');
 const ids = items.map((s) => s.id);
