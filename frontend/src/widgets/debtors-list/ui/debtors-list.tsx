@@ -18,7 +18,11 @@ export function DebtorsList({ month }: { month: string }) {
   const [preset, setPreset] = useState<PaymentPreset | null>(null);
 
   const openPayment = (d: Debtor) =>
-    setPreset({ student: { id: d.id, name: d.name }, amount: d.debt });
+    setPreset({
+      student: { id: d.id, name: d.name },
+      amount: d.debt,
+      amountHint: `Остаток долга: ${formatMoney(d.debt)}`,
+    });
 
   if (isPending) return <CardSkeletonList />;
   if (isError) return <ErrorState message={error.message} onRetry={() => refetch()} />;

@@ -1,5 +1,6 @@
 import { keepPreviousData, useInfiniteQuery, useQuery } from '@tanstack/react-query';
-import { nextOffset, queryKeys, type StudentListParams } from '@/shared/api';
+import { nextOffset } from '@/shared/api';
+import { studentKeys, type StudentListParams } from './query-keys';
 import { studentApi } from './student-api';
 
 export function useStudentsInfinite(
@@ -7,7 +8,7 @@ export function useStudentsInfinite(
   options: { enabled?: boolean } = {},
 ) {
   return useInfiniteQuery({
-    queryKey: queryKeys.students.list(params),
+    queryKey: studentKeys.list(params),
     queryFn: ({ pageParam, signal }) => studentApi.list({ ...params, offset: pageParam }, signal),
     initialPageParam: 0,
     getNextPageParam: nextOffset,
@@ -19,7 +20,7 @@ export function useStudentsInfinite(
 /** Small list for pickers: one page, no pagination. */
 export function useStudentSearch(search: string, enabled = true) {
   return useQuery({
-    queryKey: [...queryKeys.students.list({ search }), 'picker'],
+    queryKey: [...studentKeys.list({ search }), 'picker'],
     queryFn: ({ signal }) => studentApi.list({ search, limit: 10 }, signal),
     placeholderData: keepPreviousData,
     enabled,
@@ -28,7 +29,7 @@ export function useStudentSearch(search: string, enabled = true) {
 
 export function useStudent(id: number) {
   return useQuery({
-    queryKey: queryKeys.students.detail(id),
+    queryKey: studentKeys.detail(id),
     queryFn: ({ signal }) => studentApi.get(id, signal),
     enabled: id > 0,
   });

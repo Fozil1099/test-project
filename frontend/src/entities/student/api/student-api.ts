@@ -1,10 +1,5 @@
-import {
-  PAGE_SIZE,
-  request,
-  type PageParams,
-  type Paginated,
-  type StudentListParams,
-} from '@/shared/api';
+import { PAGE_SIZE, request, type PageParams, type Paginated } from '@/shared/api';
+import { type StudentListParams } from './query-keys';
 import type { Student, StudentInput } from '../model/types';
 
 export const studentApi = {

@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { queryKeys } from '@/shared/api';
-import { paymentApi, type PaymentInput } from '@/entities/payment';
+import { debtorKeys } from '@/entities/debtor';
+import { paymentApi, paymentKeys, type PaymentInput } from '@/entities/payment';
 
 export function useCreatePayment() {
   const queryClient = useQueryClient();
@@ -9,9 +9,9 @@ export function useCreatePayment() {
     onSuccess: (payment) =>
       Promise.all([
         // Payment date may fall into any month, so all cached months are stale.
-        queryClient.invalidateQueries({ queryKey: queryKeys.debtors.all }),
+        queryClient.invalidateQueries({ queryKey: debtorKeys.all }),
         queryClient.invalidateQueries({
-          queryKey: queryKeys.payments.byStudent(payment.studentId),
+          queryKey: paymentKeys.byStudent(payment.studentId),
         }),
       ]),
   });

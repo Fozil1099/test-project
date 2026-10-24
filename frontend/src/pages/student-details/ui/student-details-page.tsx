@@ -93,7 +93,11 @@ function StudentInfo({ student, onDeleted }: { student: Student; onDeleted: () =
       <AddPaymentSheet
         open={paying}
         onClose={() => setPaying(false)}
-        preset={{ student: { id: student.id, name: student.name }, amount: student.monthlyFee }}
+        preset={{
+          student: { id: student.id, name: student.name },
+          amount: student.monthlyFee,
+          amountHint: `Сумма в месяц: ${formatMoney(student.monthlyFee)}`,
+        }}
       />
     </Card>
   );

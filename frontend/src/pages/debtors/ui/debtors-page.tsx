@@ -10,7 +10,7 @@ import { PageHeader } from '@/widgets/page-header';
 export function DebtorsPage() {
   const [params, setParams] = useSearchParams();
   const raw = params.get('month');
-  const month = isValidMonth(raw) ? raw : currentMonth();
+  const month = isValidMonth(raw) && raw <= currentMonth() ? raw : currentMonth();
   const [paying, setPaying] = useState(false);
 
   return (

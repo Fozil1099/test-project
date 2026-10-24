@@ -9,8 +9,10 @@ import { StudentPicker, type PickedStudent } from './student-picker';
 
 export interface PaymentPreset {
   student: PickedStudent;
-  /** Pre-filled amount, e.g. the remaining debt. */
+  /** Pre-filled amount. */
   amount?: number;
+  /** Text under the amount field, e.g. the remaining debt. */
+  amountHint?: string;
 }
 
 interface AddPaymentSheetProps {
@@ -73,11 +75,7 @@ function PaymentForm({ preset, onDone }: { preset?: PaymentPreset; onDone: () =>
           />
         )}
       </Field>
-      <Field
-        label="Сумма"
-        error={errors.amount?.message}
-        hint={preset?.amount ? `Остаток долга: ${formatMoney(preset.amount)}` : undefined}
-      >
+      <Field label="Сумма" error={errors.amount?.message} hint={preset?.amountHint}>
         {(p) => (
           <Controller
             control={control}
